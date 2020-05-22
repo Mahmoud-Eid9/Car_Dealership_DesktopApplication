@@ -1,6 +1,7 @@
 package application;
 
 public class Car {
+	
 	private int id;
 	private String brand;
 	private String model;
@@ -98,7 +99,7 @@ public class Car {
 		this.breaksType = breaksType;
 	}
 	
-	
+	//public reserve()
 	
 
 }
