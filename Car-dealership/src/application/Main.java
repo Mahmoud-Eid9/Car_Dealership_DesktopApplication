@@ -12,6 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,7 +24,6 @@ import javafx.scene.text.FontWeight;
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
-		try {
 			HBox root = new HBox(0);
 			root.setStyle("-fx-background-color: white");
 			root.setMaxSize(1100, 750);
@@ -30,24 +31,28 @@ public class Main extends Application {
 			root.setAlignment(Pos.CENTER_LEFT);
 			VBox vbox = new VBox(20);
 			vbox.setAlignment(Pos.CENTER);
-			vbox.setPadding(new Insets(150, 15, 5, 20));
+			vbox.setPadding(new Insets(100, 50, 5, 20));
+			Scene scene = new Scene(root,1100,650,Color.WHITE);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 	
 			
 			//TextFields
-			HBox h1 = new HBox(20);
-			HBox h2 = new HBox(20);
+			VBox v1 = new VBox(20);
+			VBox v2 = new VBox(20);
 			TextField usernameField = new TextField();
+			usernameField.setFont(Font.font(20));
 			Label usernameLabel = new Label("Username");
 			usernameField.setMinSize(300, 40);
 			usernameLabel.setPadding(new Insets(3, 0, 0, 0));
 			usernameLabel.setFont(Font.font( 25) );
 			TextField passwordField = new TextField();
+			passwordField.setFont(Font.font(20));
 			Label passwordLabel = new Label("Password ");
 			passwordLabel.setFont(Font.font( 25) );
 			passwordLabel.setPadding(new Insets(5, 0, 0, 0));
 			passwordField.setMinSize(300, 40);
-			h1.getChildren().addAll(usernameLabel, usernameField);
-			h2.getChildren().addAll(passwordLabel, passwordField);
+			v1.getChildren().addAll(usernameLabel, usernameField);
+			v2.getChildren().addAll(passwordLabel, passwordField);
 			
 			
 			//Buttons
@@ -65,18 +70,15 @@ public class Main extends Application {
 			
 			//Image
 			
-			Image image = new Image("carImage.jpg");
-			ImageView imageView = new ImageView(image);
-			vbox.getChildren().addAll(h1, h2, buttonsBox);
-			root.getChildren().addAll(vbox, imageView);
-			Scene scene = new Scene(root,1100,650,Color.WHITE);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
+			Image im = new Image("carImage.jpg");
+			ImageView image = new ImageView(im);
+			image.setFitHeight(670);
+			image.setFitWidth(800);
+			vbox.getChildren().addAll(v1, v2, buttonsBox);
+			root.getChildren().addAll(vbox,image);
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static void main(String[] args) {
