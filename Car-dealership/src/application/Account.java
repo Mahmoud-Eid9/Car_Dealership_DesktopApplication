@@ -8,14 +8,16 @@ public class Account {
 	private int age;
 	private String userName;
 	private String Password;
-	public Account(int id, String firstName, String lastName, int age, String userName, String password) {
+	private boolean employee;
+	
+	public Account(String firstName, String lastName, int age, String userName, String Password, boolean employee) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.age = age;
 		this.userName = userName;
-		Password = password;
+		this.Password = Password;
+		this.employee = employee;
 	}
 	public int getId() {
 		return id;
@@ -52,6 +54,12 @@ public class Account {
 	}
 	public void setPassword(String password) {
 		Password = password;
+	}
+	public boolean isEmployee() {
+		return employee;
+	}
+	public void setEmployee(boolean employee) {
+		this.employee = employee;
 	}
 	
 	
