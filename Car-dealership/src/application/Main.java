@@ -29,16 +29,15 @@ public class Main extends Application {
 			root.setMaxSize(1100, 750);
 			root.setMinSize(1100, 750);
 			root.setAlignment(Pos.CENTER_LEFT);
-			VBox vbox = new VBox(20);
-			vbox.setAlignment(Pos.CENTER);
-			vbox.setPadding(new Insets(100, 50, 5, 20));
-			Scene scene = new Scene(root,1100,650,Color.WHITE);
+			VBox vbox = new VBox(10);
+			vbox.setPadding(new Insets(90, 50, 5, 20));
+			Scene scene = new Scene(root,1200,600,Color.WHITE);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 	
 			
 			//TextFields
-			VBox v1 = new VBox(20);
-			VBox v2 = new VBox(20);
+			VBox v1 = new VBox(10);
+			VBox v2 = new VBox(10);
 			TextField usernameField = new TextField();
 			usernameField.setFont(Font.font(20));
 			Label usernameLabel = new Label("Username");
@@ -70,10 +69,10 @@ public class Main extends Application {
 			
 			//Image
 			
-			Image im = new Image("carImage.jpg");
+			Image im = new Image("carImage.jpeg");
 			ImageView image = new ImageView(im);
-			image.setFitHeight(670);
-			image.setFitWidth(800);
+			image.setFitHeight(650);
+			image.setFitWidth(850);
 			vbox.getChildren().addAll(v1, v2, buttonsBox);
 			root.getChildren().addAll(vbox,image);
 			primaryStage.setResizable(false);
