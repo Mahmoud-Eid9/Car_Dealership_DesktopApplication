@@ -136,6 +136,7 @@ public class Main extends Application {
 	}
 	
 	public GridPane displayCars(Car cars[],Stage primaryStage) {
+		
 		GridPane pane = new GridPane();
 		ImageView image[] = new ImageView[cars.length];
 		Label carName[] = new Label[cars.length];
@@ -146,7 +147,7 @@ public class Main extends Application {
 		for(int i=0; i<cars.length;i++) {
 		image[i] = new ImageView();
 		carName[i] = new Label("Here goes the name ");
-		carPrice[i] = new Label("the Price");
+		carPrice[i] = new Label("the Price" + " L.E");
 		h1[i] = new HBox(carName[i],carPrice[i]);
 		h1[i].setSpacing(25);
 		carBox[i] = new VBox(image[i], h1[i]);
@@ -169,10 +170,37 @@ public class Main extends Application {
 	
 	public Scene carDescription(Car car ,Stage primaryStage) {
 		BorderPane root = new BorderPane();
+		Label brand = new Label(car.getBrand());
+		Label model = new Label(car.getModel());
+		Label price = new Label(Double.toString(car.getPrice())+ " L.E");
+		Label horsePower = new Label(Integer.toString(car.getHorsePower()));
+		Label doors = new Label(Integer.toString(car.getDoors()));
+		Label seats = new Label(Integer.toString(car.getSeats()) + " seats");
+		Label topSpeed = new Label(Integer.toString(car.getTopSpeed())+" k/hr");
+		Label transmission = new Label(car.getTransmission());
+		Label trunkSize = new Label(Double.toString(car.getTrunkSize()) + " Liters");
+		Label breaksType = new Label(car.getBreaksType());
+		VBox v1 = new VBox(brand, model, price, horsePower, doors, seats);
+		v1.setSpacing(50);
+		VBox v2 = new VBox(topSpeed, transmission, trunkSize, breaksType);
+		v2.setSpacing(50);
+		HBox h = new HBox (v1,v2);
+		h.setSpacing(100);
+		root.setCenter(h);
 		Scene scene = new Scene(root);
 		return scene ;
 	}
-	
+
+	public Scene signUpScreen(Stage primaryStage) {
+		BorderPane pane = new BorderPane();
+		Scene scene = new Scene(pane);
+		TextField firstName = new TextField();
+		TextField lastName = new TextField();
+		TextField age = new TextField();
+		PasswordField password = new PasswordField();
+		
+		return scene ;
+	}
 	
 	
 	
