@@ -27,6 +27,5 @@ public class Employee extends Account {
 		this.shift = shift;
 	}
 	
-	//jhhoihoijkgh
-
+	
 }
