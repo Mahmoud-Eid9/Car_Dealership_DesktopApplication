@@ -1,7 +1,7 @@
 package application;
 
 public class Employee extends Account {
-	
+	//adeeny aho bgrab tany
 	private String address;
 	private String shift;
 	

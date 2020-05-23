@@ -1,7 +1,7 @@
 package application;
 
 public class Customer extends Account {
-	
+	//adeeny aho bgrab tany
 	private boolean reservation;
 
 	public Customer(String firstName, String lastName, int age, String userName, String password, boolean employee, boolean reservation) {
