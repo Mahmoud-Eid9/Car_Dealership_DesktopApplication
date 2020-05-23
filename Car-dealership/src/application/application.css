@@ -16,6 +16,7 @@
 	-fx-background-color: white ;
 	-fx-border-radius: 10px;
 }
-body{
-	-fx-background-color: white ;
+.label{
+	-fx-font-weight: bold ;
+	-fx-text-fill: #ccc ;
 }
