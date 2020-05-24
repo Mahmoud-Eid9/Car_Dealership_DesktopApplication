@@ -57,12 +57,16 @@ public class Main extends Application {
 		VBox v1 = new VBox(0);
 		VBox v2 = new VBox(0);
 		TextField usernameField = new TextField();
+		usernameField.setMinHeight(25);
+		usernameField.setMaxHeight(25);
 		usernameField.setFont(Font.font(20));
 		Label usernameLabel = new Label("Username");
 		usernameField.setMinSize(300, 40);
 		usernameLabel.setPadding(new Insets(3, 0, 0, 0));
 		usernameLabel.setFont(Font.font( 20) );
 		PasswordField passwordField = new PasswordField();
+		passwordField.setMinHeight(25);
+		passwordField.setMaxHeight(25);
 		passwordField.setFont(Font.font(20));
 		Label passwordLabel = new Label("Password ");
 		passwordLabel.setFont(Font.font( 20) );
@@ -88,6 +92,16 @@ public class Main extends Application {
 		Button signUp = new Button("Sign-Up");
 		signUp.setMinSize(200, 60);
 		signUp.setFont(Font.font( 25) );
+		signUp.setOnAction(e -> {
+			FadeTransition trans = new FadeTransition(Duration.millis(200));
+			trans.setNode(root);
+			trans.setFromValue(1);
+			trans.setToValue(0);
+			trans.play();
+			trans.setOnFinished((ActionEvent event) -> {
+				primaryStage.setScene(signUpScreen(primaryStage));
+			});
+		});
 		VBox buttonsBox = new VBox(logIn, signUp);
 		buttonsBox.setSpacing(40);
 		buttonsBox.setPadding(new Insets(5, 0, 0, 0));
@@ -192,12 +206,63 @@ public class Main extends Application {
 	}
 
 	public Scene signUpScreen(Stage primaryStage) {
-		BorderPane pane = new BorderPane();
-		Scene scene = new Scene(pane);
+
+		HBox pane = new HBox();
+		pane.setStyle("-fx-background-color: white");
+		FadeTransition trans3 = new FadeTransition(Duration.millis(200));
+		trans3.setNode(pane);
+		trans3.setFromValue(0);
+		trans3.setToValue(1);
+		trans3.play();
+		Scene scene = new Scene(pane, 1200 , 600);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
+		
+		//textfields
 		TextField firstName = new TextField();
 		TextField lastName = new TextField();
 		TextField age = new TextField();
+		age.setMaxWidth(190);
 		PasswordField password = new PasswordField();
+		PasswordField confirmPassword = new PasswordField();
+		
+		//labels
+		Label firstNameLabel = new Label("First Name");
+		Label lastNameLabel = new Label("Last Name");
+		Label ageLabel = new Label("Age");
+		Label passwordLabel = new Label("Password");
+		Label confirmPasswordLabel = new Label("Confirm Passowrd");
+		//button
+		Button button = new Button("Sign-In");
+		button.setMinSize(150, 60);
+		button.setFont(Font.font(30) );
+		
+		//vbox's label and field
+		VBox v1 = new VBox(firstNameLabel,firstName);
+		v1.setSpacing(10);
+		VBox v2 = new VBox(lastNameLabel,lastName);
+		v2.setSpacing(10);
+		VBox v3 = new VBox(ageLabel, age);
+		v3.setSpacing(10);
+		VBox v4 = new VBox(passwordLabel, password);
+		v4.setSpacing(10);
+		VBox v5 = new VBox(confirmPasswordLabel, confirmPassword);
+		v5.setSpacing(10);
+		HBox h1 = new HBox(v1, v2);
+		h1.setSpacing(50);
+		HBox h2 = new HBox(v4, v5);
+		h2.setSpacing(50);
+		
+		
+		VBox vx = new VBox(h1,v3 ,h2, button);
+		vx.setSpacing(50);
+		
+		VBox v = new VBox(vx, button);
+		v.setPadding(new Insets(80,50,50,50));
+		v.setSpacing(100);
+		
+		
+		pane.getChildren().addAll(v);
+		
 		
 		return scene ;
 	}
