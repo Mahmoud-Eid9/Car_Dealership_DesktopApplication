@@ -17,6 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.scene.layout.StackPane;
@@ -59,7 +61,6 @@ public class Main extends Application {
 		TextField usernameField = new TextField();
 		usernameField.setMinHeight(25);
 		usernameField.setMaxHeight(25);
-		usernameField.setFont(Font.font(20));
 		Label usernameLabel = new Label("Username");
 		usernameField.setMinSize(300, 40);
 		usernameLabel.setPadding(new Insets(3, 0, 0, 0));
@@ -67,7 +68,6 @@ public class Main extends Application {
 		PasswordField passwordField = new PasswordField();
 		passwordField.setMinHeight(25);
 		passwordField.setMaxHeight(25);
-		passwordField.setFont(Font.font(20));
 		Label passwordLabel = new Label("Password ");
 		passwordLabel.setFont(Font.font( 20) );
 		passwordLabel.setPadding(new Insets(5, 0, 0, 0));
@@ -125,21 +125,29 @@ public class Main extends Application {
 
 		BorderPane root = new BorderPane();
 		
-		FadeTransition trans2 = new FadeTransition(Duration.millis(200));
-		trans2.setNode(root);
-		trans2.setFromValue(0);
-		trans2.setToValue(1);
-		trans2.play();
+		FadeTransition trans = new FadeTransition(Duration.millis(200));
+		trans.setNode(root);
+		trans.setFromValue(0);
+		trans.setToValue(1);
+		trans.play();
 		
 		root.setStyle("-fx-background-color : #F4F4F4");
 		Scene scene = new Scene(root,1200,800,Color.WHITE);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 		
 		//SideBar
-		VBox sideBar = new VBox();
-		Circle image = new Circle(80);
+		VBox sideBar = new VBox(50);
+		Circle profile = new Circle(80);
 		Image im = new Image("profile_icon.png");
-		image.setFill(new ImagePattern(im));
-		sideBar.getChildren().add(image);
+		profile.setFill(new ImagePattern(im));
+		Image im2 = new Image("LogOut_icon.png");
+		ImageView image = new ImageView(im2);
+		HBox logOut = new HBox(image);
+		logOut.setOnMouseClicked(e -> {
+			primaryStage.setScene(logInScreen(primaryStage));
+		});
+		logOut.setAlignment(Pos.CENTER);
+		sideBar.getChildren().addAll(profile, logOut);
 		sideBar.setStyle("-fx-background-color: black");
 		sideBar.setPadding(new Insets(15, 15, 15, 15));
 		root.setLeft(sideBar);
@@ -181,7 +189,6 @@ public class Main extends Application {
 		return pane ;
 	}
 	
-	
 	public Scene carDescription(Car car ,Stage primaryStage) {
 		BorderPane root = new BorderPane();
 		Label brand = new Label(car.getBrand());
@@ -206,14 +213,18 @@ public class Main extends Application {
 	}
 
 	public Scene signUpScreen(Stage primaryStage) {
+		
 
 		HBox pane = new HBox();
+		FadeTransition trans = new FadeTransition(Duration.millis(200));
+		trans.setNode(pane);
+		trans.setFromValue(0);
+		trans.setToValue(1);
+		trans.play();
+		pane.setMaxSize(1100, 750);
+		pane.setMinSize(1100, 750);
 		pane.setStyle("-fx-background-color: white");
-		FadeTransition trans3 = new FadeTransition(Duration.millis(200));
-		trans3.setNode(pane);
-		trans3.setFromValue(0);
-		trans3.setToValue(1);
-		trans3.play();
+
 		Scene scene = new Scene(pane, 1200 , 600);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 		
@@ -232,7 +243,13 @@ public class Main extends Application {
 		Label passwordLabel = new Label("Password");
 		Label confirmPasswordLabel = new Label("Confirm Passowrd");
 		//button
-		Button button = new Button("Sign-In");
+		Button button = new Button("Sign-Up");
+		Button back = new Button("Back");
+		back.setOnAction(e -> {
+			primaryStage.setScene(logInScreen(primaryStage));
+		});
+		back.setId("back_button");
+		back.setMinSize(70, 40);
 		button.setMinSize(150, 60);
 		button.setFont(Font.font(30) );
 		
@@ -247,21 +264,28 @@ public class Main extends Application {
 		v4.setSpacing(10);
 		VBox v5 = new VBox(confirmPasswordLabel, confirmPassword);
 		v5.setSpacing(10);
+		
 		HBox h1 = new HBox(v1, v2);
 		h1.setSpacing(50);
 		HBox h2 = new HBox(v4, v5);
 		h2.setSpacing(50);
 		
 		
-		VBox vx = new VBox(h1,v3 ,h2, button);
+		VBox vx = new VBox(h1,v3 ,h2);
+		VBox vBack = new VBox(back, vx);
 		vx.setSpacing(50);
-		
-		VBox v = new VBox(vx, button);
-		v.setPadding(new Insets(80,50,50,50));
-		v.setSpacing(100);
-		
-		
+		vBack.setSpacing(25);
+		VBox v = new VBox(vBack, button);
+		v.setPadding(new Insets(50,50,50,50));
+		v.setSpacing(70);
+		v.setMinWidth(500);
 		pane.getChildren().addAll(v);
+		
+		Image im = new Image("signup_image.png");
+		ImageView image = new ImageView(im);
+		image.setFitHeight(600);
+		image.setFitWidth(700);
+		pane.getChildren().add(image);
 		
 		
 		return scene ;
