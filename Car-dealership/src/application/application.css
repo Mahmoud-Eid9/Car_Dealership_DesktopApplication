@@ -35,3 +35,9 @@
 	-fx-border-radius: 5px;
 	-fx-font-weight: bold ;
 }
+#warning{
+	-fx-text-fill: red ;
+	-fx-font-weight: bold;
+	-fx-font-size: 14 ;
+	-fx-padding: 5px
+}

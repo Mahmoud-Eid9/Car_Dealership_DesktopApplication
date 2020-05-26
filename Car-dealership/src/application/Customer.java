@@ -8,6 +8,9 @@ public class Customer extends Account {
 		super(firstName, lastName, age, userName, password, employee);
 		// TODO Auto-generated constructor stub
 	}
+	public Customer() {
+		
+	}
 
 	public boolean isReservation() {
 		return reservation;

@@ -2,7 +2,6 @@ package application;
 
 public class Car {
 	
-	private int id;
 	private String brand;
 	private String model;
 	private double price;
@@ -16,10 +15,9 @@ public class Car {
 	
 	
 	
-	public Car(int id, String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
+	public Car( String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
 			String transmission, double trunkSize, String breaksType) {
 		super();
-		this.id = id;
 		this.brand = brand;
 		this.model = model;
 		this.price = price;
@@ -32,12 +30,6 @@ public class Car {
 		this.breaksType = breaksType;
 	}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getBrand() {
 		return brand;
 	}

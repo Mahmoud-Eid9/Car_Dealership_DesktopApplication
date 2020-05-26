@@ -10,6 +10,10 @@ public class Account {
 	private String Password;
 	private boolean employee;
 	
+	public Account() {
+		
+	}
+	
 	public Account(String firstName, String lastName, int age, String userName, String Password, boolean employee) {
 		super();
 		this.firstName = firstName;

@@ -6,10 +6,10 @@ public class ElectricMotors extends Car {
 	private double milesPerCharge;
 	private double chargingTime;
 	
-	public ElectricMotors(int id, String brand, String model, double price, int horsePower, int doors, int seats,
+	public ElectricMotors(String brand, String model, double price, int horsePower, int doors, int seats,
 			int topSpeed, String transmission, double trunkSize, String breaksType, double batteryCapacity, double milesPerCharge, double chargingTime) {
 		
-		super(id, brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType);
+		super(brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType);
 		// TODO Auto-generated constructor stub
 		this.batteryCapacity = batteryCapacity;
 		this.milesPerCharge = milesPerCharge;
