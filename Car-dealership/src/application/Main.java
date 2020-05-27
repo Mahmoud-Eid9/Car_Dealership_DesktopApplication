@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,8 +20,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -33,6 +38,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -41,6 +47,7 @@ import javafx.scene.text.FontWeight;
 public class Main extends Application {
 	
 	Customer customer;
+	Image profile ;
 	ArrayList<Car> cars = new ArrayList<Car>() ;
 	boolean v = true ;
 	
@@ -52,9 +59,25 @@ public class Main extends Application {
         	Statement stmt = con.createStatement();
         	ResultSet r = stmt.executeQuery("Select * From CAR");
         	while(r.next()) {
-        		System.out.println(r.getString(2));
-        		Car car = new Car(r.getString(2), r.getString(3), r.getDouble(4), r.getInt(5), r.getInt(6), r.getInt(7),r.getInt(8), r.getString(9), r.getInt(10), r.getString(11) );
+
+            	InputStream is = r.getBinaryStream("image");
+            	OutputStream os = new FileOutputStream(new File("profile.png"));
+            	byte[] content = new byte[1024];
+            	int size = 0;
+            	while((size = is.read(content))!= -1) {
+            		os.write(content, 0, size);
+            	}
+            	os.close();
+            	is.close();
+            	Image image  = new Image("file:profile.png");
+            	image.isPreserveRatio();
+            	if(r.getInt("BATTERYCAPACITY") != 0) {
+            		ElectricMotors car = new ElectricMotors(r.getString(2), r.getString(3), r.getDouble(4), r.getInt(5), r.getInt(6), r.getInt(7),r.getInt(8), r.getString(9), r.getInt(10), r.getString(11),r.getInt(14), r.getInt(15),r.getInt(16),image );
+            		this.cars.add(car);
+            	}else {
+        		Car car = new Car(r.getString(2), r.getString(3), r.getDouble(4), r.getInt(5), r.getInt(6), r.getInt(7),r.getInt(8), r.getString(9), r.getInt(10), r.getString(11),image );
         		this.cars.add(car);
+            	}
         	}
         	
 		}catch(Exception e) {
@@ -164,14 +187,13 @@ public class Main extends Application {
 		
 
 		BorderPane root = new BorderPane();
-		
 		FadeTransition trans = new FadeTransition(Duration.millis(200));
 		trans.setNode(root);
 		trans.setFromValue(0);
 		trans.setToValue(1);
 		trans.play();
 		
-		root.setStyle("-fx-background-color : #F4F4F4");
+		root.setStyle("-fx-background-color : white");
 		Scene scene = new Scene(root,1200,800,Color.WHITE);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
 		
@@ -179,7 +201,7 @@ public class Main extends Application {
 		VBox sideBar = new VBox(50);
 		Circle profile = new Circle(80);
 		Image im = new Image("profile_icon.png");
-		profile.setFill(new ImagePattern(im));
+		profile.setFill(new ImagePattern(this.profile));
 		Image im2 = new Image("LogOut_icon.png");
 		ImageView image = new ImageView(im2);
 		HBox logOut = new HBox(image);
@@ -197,9 +219,16 @@ public class Main extends Application {
 		return scene;
 	}
 	
-	public GridPane displayCars(Stage primaryStage) {
+	public ScrollPane displayCars(Stage primaryStage) {
 		
+		ScrollPane root = new ScrollPane();
 		GridPane pane = new GridPane();
+		root.setContent(pane);
+		final double SPEED = 0.01;
+	    root.getContent().setOnScroll(scrollEvent -> {
+	        double deltaY = scrollEvent.getDeltaY() * SPEED;
+	        root.setVvalue(root.getVvalue() - deltaY);
+	    });
 		ImageView image[] = new ImageView[this.cars.size()];
 		Label carName[] = new Label[this.cars.size()];
 		Label carPrice[] = new Label[this.cars.size()];
@@ -207,55 +236,126 @@ public class Main extends Application {
 		VBox carBox[] = new VBox[this.cars.size()];
 		
 		for(int i=0; i<this.cars.size();i++) {
-		image[i] = new ImageView();
-		carName[i] = new Label(this.cars.get(i).getBrand()+" "+ this.cars.get(i).getModel());
-		carPrice[i] = new Label(this.cars.get(i).getPrice() + " L.E");
-		carPrice[i].setAlignment(Pos.BASELINE_RIGHT);;
-		h1[i] = new HBox(carName[i],carPrice[i]);
-		h1[i].setSpacing(170);
-		carBox[i] = new VBox(image[i], h1[i]);
-		carBox[i].setSpacing(30);
-		carBox[i].setPadding(new Insets(15, 15, 15, 15));
-		carBox[i].setStyle("-fx-background-color: white"); 
-		carBox[i].setMinWidth(400);
-		pane.add(carBox[i], i%2 , (int) Math.ceil(i/2));
-		final int j = i ;
-		carBox[i].setOnMouseClicked(e -> {
-		carDescription(cars.get(j)).show();
-		});
-		}
-		pane.setPadding(new Insets(50,50,50,50));
-		pane.setAlignment(Pos.CENTER);
-		pane.setHgap(50);
-		pane.setVgap(50);
-		return pane ;
+			
+			Rectangle photo = new Rectangle(360, 202.5);
+			photo.setFill(new ImagePattern(this.cars.get(i).getImage()));
+			photo.setArcWidth(15);
+			photo.setArcHeight(15);
+			carName[i] = new Label(this.cars.get(i).getBrand()+" "+ this.cars.get(i).getModel());
+			carPrice[i] = new Label(this.cars.get(i).getPrice() + " L.E");
+			carPrice[i].setAlignment(Pos.BASELINE_RIGHT);;
+			h1[i] = new HBox(carName[i],carPrice[i]);
+			h1[i].setSpacing(160);
+			h1[i].setAlignment(Pos.BASELINE_CENTER);
+			carBox[i] = new VBox(photo, h1[i]);
+			carBox[i].setSpacing(30);
+			carBox[i].setPadding(new Insets(22, 18, 15, 18));
+			carBox[i].setStyle("-fx-background-color: white; -fx-border-width: 1px;-fx-border-radius: 10px;"); 
+			carBox[i].setMinWidth(400);
+			carBox[i].setAlignment(Pos.CENTER);
+			carBox[i].setId("car");
+			pane.add(carBox[i], i%2 , (int) Math.ceil(i/2));
+			final int j = i ;
+			carBox[i].setOnMouseClicked(e -> {
+			carDescription(cars.get(j)).show();
+			});
+			}
+			pane.setPadding(new Insets(50,50,50,50));
+			pane.setAlignment(Pos.CENTER);
+			pane.setHgap(50);
+			pane.setVgap(50);
+			return root ;
 	}
 	
 	public Stage carDescription(Car car) {
-		BorderPane root = new BorderPane();
-		Label brand = new Label("Brand: "+car.getBrand());
-		Label model = new Label("Model: "+car.getModel());
-		Label price = new Label("Price: "+Double.toString(car.getPrice())+ " L.E");
-		Label horsePower = new Label("Horsepower: "+ Integer.toString(car.getHorsePower()));
-		Label doors = new Label("Doors: "+Integer.toString(car.getDoors()));
-		Label seats = new Label("Seats: "+Integer.toString(car.getSeats()) + " seats");
-		Label topSpeed = new Label("Top Speed: " +Integer.toString(car.getTopSpeed())+" k/hr");
-		Label transmission = new Label("transmission: "+car.getTransmission());
-		Label trunkSize = new Label("trunksize: "+Double.toString(car.getTrunkSize()) + " Liters");
-		Label breaksType = new Label("BreaksType: "+car.getBreaksType());
-		VBox v1 = new VBox(brand, model, price, horsePower, doors, seats);
-		v1.setSpacing(50);
-		VBox v2 = new VBox(topSpeed, transmission, trunkSize, breaksType);
-		v2.setSpacing(50);
-		HBox h = new HBox (v1,v2);
-		h.setSpacing(100);
-		root.setCenter(h);
-		h.setPadding(new Insets(100,100,100,100));
-		Scene scene = new Scene(root, 600,600);
-		Stage stage =  new Stage();
-		stage.setScene(scene);
-		stage.setResizable(false);
-		return stage ;
+		try {
+			
+			ElectricMotors elecCar = (ElectricMotors)car ;
+			VBox root = new VBox();
+			root.setStyle("-fx-background-color: white");
+			Label brand = new Label("Brand:  "+car.getBrand());
+			Label model = new Label("Model:  "+car.getModel());
+			Label price = new Label("Price:  "+Double.toString(car.getPrice())+ " L.E");
+			Label horsePower = new Label("Horsepower:  "+ Integer.toString(car.getHorsePower()));
+			Label doors = new Label("Doors:  "+Integer.toString(car.getDoors()));
+			Label seats = new Label("Seats:  "+Integer.toString(car.getSeats())+" seats");
+			Label topSpeed = new Label("Top Speed:  " +Integer.toString(car.getTopSpeed())+" k/hr");
+			Label transmission = new Label("transmission:  "+car.getTransmission());
+			Label trunkSize = new Label("trunksize:  "+Double.toString(car.getTrunkSize())+" Liters");
+			Label breaksType = new Label("BreaksType:  "+car.getBreaksType());
+			Label batteryCapacity = new Label("BatteryCapacity:  "+ elecCar.getBatteryCapacity()+" kWh");
+			Label milesPerCharge = new Label("Miles per Charge:  "+elecCar.getMilesPerCharge()+" Miles");
+			Label chargingTime = new Label("Charging time:  "+elecCar.getChargingTime()+" Hrs");
+			VBox v1 = new VBox(brand, model, price, horsePower, topSpeed);
+			v1.setSpacing(15);
+			VBox v2 = new VBox(transmission, trunkSize, breaksType,batteryCapacity,milesPerCharge);
+			v2.setSpacing(15);
+			VBox v3 = new VBox(doors, seats,chargingTime);
+			v3.setSpacing(15);
+			HBox h = new HBox (v1,v2,v3);
+			h.setSpacing(150);
+			h.setAlignment(Pos.BASELINE_CENTER);
+			h.setPadding(new Insets(50,0,50,0));
+			ImageView im = new ImageView(elecCar.getImage());
+			im.setFitHeight(590.625);
+			im.setFitWidth(1050);
+			HBox image = new HBox(im);
+			image.setPadding(new Insets(50,0,0,0));
+			image.setAlignment(Pos.CENTER);
+			root.getChildren().addAll(image, h);
+			root.setPadding(new Insets(30, 100,30,100));
+			root.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(root, 1200,900);
+			scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());	
+			Stage stage =  new Stage();
+			stage.setScene(scene);
+			stage.setResizable(false);
+			return stage ;
+			
+		}catch(Exception e) {
+			
+			VBox root = new VBox();
+			root.setStyle("-fx-background-color: white");
+			Label brand = new Label("Brand:  "+car.getBrand());
+			Label model = new Label("Model:  "+car.getModel());
+			Label price = new Label("Price:  "+Double.toString(car.getPrice())+ " L.E");
+			Label horsePower = new Label("Horsepower:  "+ Integer.toString(car.getHorsePower()));
+			Label doors = new Label("Doors:  "+Integer.toString(car.getDoors()));
+			Label seats = new Label("Seats:  "+Integer.toString(car.getSeats()) + " seats");
+			Label topSpeed = new Label("Top Speed:  " +Integer.toString(car.getTopSpeed())+" k/hr");
+			Label transmission = new Label("transmission:  "+car.getTransmission());
+			Label trunkSize = new Label("trunksize:  "+Double.toString(car.getTrunkSize()) + " Liters");
+			Label breaksType = new Label("BreaksType:  "+car.getBreaksType());
+			VBox v1 = new VBox(brand, model, price, horsePower);
+			v1.setSpacing(15);
+			VBox v2 = new VBox(topSpeed, transmission, trunkSize, breaksType);
+			v2.setSpacing(15);
+			VBox v3 = new VBox(doors, seats);
+			v3.setSpacing(15);
+			HBox h = new HBox (v1,v2,v3);
+			h.setSpacing(100);
+			h.setAlignment(Pos.BASELINE_CENTER);
+			h.setPadding(new Insets(50,0,50,0));
+			ImageView im = new ImageView(car.getImage());
+			im.setFitHeight(590.625);
+			im.setFitWidth(1000);
+			HBox image = new HBox(im);
+			image.setPadding(new Insets(50,0,0,0));
+			image.setAlignment(Pos.CENTER);
+			root.getChildren().addAll(image, h);
+			root.setPadding(new Insets(30, 100, 30, 100));
+			root.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(root, 1200,900);
+			scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());	
+			Stage stage =  new Stage();
+			stage.setScene(scene);
+			stage.setResizable(false);
+			return stage ;
+		}
+
+
+		
+
 	}
 
 	public Scene signUpScreen(Stage primaryStage) {
@@ -355,7 +455,6 @@ public class Main extends Application {
 
         while(r.next()) {
         	this.v = false ;
-        	System.out.println(r.getString(2));
         	if(r.getInt(7) == 0) {
         		employee = false;
         	}else {
@@ -366,7 +465,20 @@ public class Main extends Application {
         	}else {
         		reservation = true;
         	}
+        	InputStream is = r.getBinaryStream("image");
+        	OutputStream os = new FileOutputStream(new File("profile.png"));
+        	byte[] content = new byte[1024];
+        	int size = 0;
+        	while((size = is.read(content))!= -1) {
+        		os.write(content, 0, size);
+        	}
+        	os.close();
+        	is.close();
+        	this.profile = new Image("file:profile.png");
+        	this.profile.isPreserveRatio();
+        	
         	return customer = new Customer(r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), employee, reservation );
+        	
 		}
         this.v = true ;
         

@@ -1,5 +1,12 @@
 package application;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javafx.scene.image.Image;
+
 public class Car {
 	
 	private String brand;
@@ -12,11 +19,12 @@ public class Car {
 	private String transmission;
 	private double trunkSize;
 	private String breaksType;
+	private Image image;
 	
 	
 	
 	public Car( String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
-			String transmission, double trunkSize, String breaksType) {
+			String transmission, double trunkSize, String breaksType, Image image) {
 		super();
 		this.brand = brand;
 		this.model = model;
@@ -28,6 +36,7 @@ public class Car {
 		this.transmission = transmission;
 		this.trunkSize = trunkSize;
 		this.breaksType = breaksType;
+		this.image = image;
 	}
 	
 	public String getBrand() {
@@ -89,6 +98,23 @@ public class Car {
 	}
 	public void setBreaksType(String breaksType) {
 		this.breaksType = breaksType;
+	}
+	public Image getImage() {
+		return this.image;
+	}
+	public void setImage(Image image) {
+		this.image = image;
+	}
+	public void reserve() {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
+	    	Statement stmt = con.createStatement();
+	    	ResultSet r = stmt.executeQuery("UPDATE table_name\n" + 
+	    			"SET column1 = value1, column2 = value2, ...\n" + 
+	    			"WHERE condition;");
+		}catch(Exception e) {
+			
+		}
 	}
 	
 	//public reserve()

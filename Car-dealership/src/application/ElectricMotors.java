@@ -1,5 +1,7 @@
 package application;
 
+import javafx.scene.image.Image;
+
 public class ElectricMotors extends Car {
 	
 	private double batteryCapacity;
@@ -7,9 +9,9 @@ public class ElectricMotors extends Car {
 	private double chargingTime;
 	
 	public ElectricMotors(String brand, String model, double price, int horsePower, int doors, int seats,
-			int topSpeed, String transmission, double trunkSize, String breaksType, double batteryCapacity, double milesPerCharge, double chargingTime) {
+			int topSpeed, String transmission, double trunkSize, String breaksType, double batteryCapacity, double milesPerCharge, double chargingTime,Image image) {
 		
-		super(brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType);
+		super(brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType,image);
 		// TODO Auto-generated constructor stub
 		this.batteryCapacity = batteryCapacity;
 		this.milesPerCharge = milesPerCharge;
