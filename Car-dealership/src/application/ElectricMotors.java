@@ -46,12 +46,13 @@ public class ElectricMotors extends Car {
 	public void setChargingTime(double chargingTime) {
 		this.chargingTime = chargingTime;
 	}
-	public int reserve(Customer customer) {
+	@Override
+	public int reserve(Customer customer, String date,String chargerdate) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
 	    	Statement stmt = con.createStatement();
 	    	stmt.executeQuery("UPDATE CAR SET ACCOUNT_ID ="+customer.getId()+" WHERE ID ="+this.getid());
-	    	customer.setReservation(1);
+	    	customer.setReservation(1,date, chargerdate);
 	    	return 1 ;
 		}catch(Exception e) {
 			return 0 ;

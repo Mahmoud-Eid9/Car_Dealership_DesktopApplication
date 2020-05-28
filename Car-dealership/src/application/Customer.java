@@ -21,11 +21,21 @@ public class Customer extends Account {
 		return reservation;
 	}
 
-	public void setReservation(int reservation) {
+	public void setReservation(int reservation, String date) {
 		try {
 		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
     	Statement stmt = con.createStatement();
-    	stmt.executeQuery("UPDATE Account SET RESERVATION ="+reservation+" WHERE ID ="+this.getId());
+    	stmt.executeQuery("UPDATE Account SET RESERVATION ="+reservation+", RECEIPT_DATE = '"+date+"' WHERE ID ="+this.getId());
+    	this.reservation = true ;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	public void setReservation(int reservation, String date,String chargerdate) {
+		try {
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
+    	Statement stmt = con.createStatement();
+    	stmt.executeQuery("UPDATE Account SET RESERVATION ="+reservation+", RECEIPT_DATE = '"+date+"', CHARG_INSTALL = '"+chargerdate+"' WHERE ID ="+this.getId());
     	this.reservation = true ;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());

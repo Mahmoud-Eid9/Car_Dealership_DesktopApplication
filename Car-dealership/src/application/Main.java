@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
@@ -36,7 +37,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -301,6 +306,10 @@ public class Main extends Application {
 			Label milesPerCharge = new Label("Miles per Charge:  "+elecCar.getMilesPerCharge()+" Miles");
 			Label chargingTime = new Label("Charging time:  "+elecCar.getChargingTime()+" Hrs");
 			
+			Label dateLabel = new Label("Pick a Date ");
+			DatePicker datepick = new DatePicker() ;
+			Label dateLabel2 = new Label("charger installation ");
+			DatePicker datepick2 = new DatePicker() ;
 			
 			Button reserve ;
 			if(!this.customer.getReservation()) {
@@ -320,7 +329,7 @@ public class Main extends Application {
 				reserve.setAlignment(Pos.CENTER);
 				reserve.setMinSize(200, 60);
 				reserve.setOnAction(f ->{
-				        car.reserve(this.customer);
+				        elecCar.reserve(this.customer, datepick.getValue().toString(), datepick2.getValue().toString());
 						reserve.setText("R E S E R V E D");
 						reserve.setId("grey-button");
 						reserve.setAlignment(Pos.CENTER);
@@ -346,7 +355,10 @@ public class Main extends Application {
 			v2.setSpacing(15);
 			VBox v3 = new VBox(doors, seats,chargingTime);
 			v3.setSpacing(15);
-			VBox v4 = new VBox(reserve);
+			HBox h1 = new HBox(dateLabel,datepick);
+			HBox h2 = new HBox(dateLabel2,datepick2);
+			VBox v4 = new VBox(reserve, h1, h2 );
+			v4.setSpacing(25);
 			v4.setAlignment(Pos.BOTTOM_CENTER);
 			HBox h = new HBox (v1,v2,v3,v4);
 			h.setSpacing(70);
@@ -383,6 +395,8 @@ public class Main extends Application {
 			Label trunkSize = new Label("trunksize:  "+Double.toString(car.getTrunkSize()) + " Liters");
 			Label breaksType = new Label("BreaksType:  "+car.getBreaksType());
 			
+			Label datepickLabel = new Label("Pick a Date ");
+			DatePicker datepick = new DatePicker() ;
 			
 			Button reserve ;
 			if(!this.customer.getReservation()) {
@@ -401,7 +415,7 @@ public class Main extends Application {
 				reserve.setAlignment(Pos.CENTER);
 				reserve.setMinSize(200, 60);
 				reserve.setOnAction(f ->{
-				        car.reserve(this.customer);
+				        car.reserve(this.customer, datepick.getValue().toString(), "hi");
 						reserve.setText("R E S E R V E D");
 						reserve.setId("grey-button");
 						reserve.setAlignment(Pos.CENTER);
@@ -422,13 +436,15 @@ public class Main extends Application {
 			}
 			
 			
+			HBox h1 = new HBox(datepickLabel,datepick);
 			VBox v1 = new VBox(brand, model, price, horsePower);
 			v1.setSpacing(15);
 			VBox v2 = new VBox(topSpeed, transmission, trunkSize, breaksType);
 			v2.setSpacing(15);
 			VBox v3 = new VBox(doors, seats);
 			v3.setSpacing(15);
-			VBox v4 = new VBox(reserve);
+			VBox v4 = new VBox(reserve, h1);
+			v4.setSpacing(25);
 			v4.setAlignment(Pos.BOTTOM_CENTER);
 			HBox h = new HBox (v1,v2,v3,v4);
 			h.setSpacing(100);
@@ -489,6 +505,7 @@ public class Main extends Application {
 		Label passwordLabel = new Label("Password");
 		Label confirmPasswordLabel = new Label("Confirm Passowrd");
 		Label browseLabel = new Label("Choose a Photo");
+		Label fileLabel = new Label();
 		browseLabel.setPadding(new Insets(7,0,0,0));
 		
 		//buttons
@@ -536,7 +553,9 @@ public class Main extends Application {
 		HBox h5 = new HBox(browseLabel, browse);
 		h5.setSpacing(10);
 		
-		VBox vx = new VBox(h1,h3 ,h2,h5);
+		VBox v7 = new VBox(h5, fileLabel);
+		v7.setSpacing(5);
+		VBox vx = new VBox(h1,h3 ,h2,v7);
 		vx.setSpacing(40);
 		VBox vBack = new VBox(back, vx);
 		vBack.setSpacing(25);
@@ -555,6 +574,7 @@ public class Main extends Application {
 			if(file != null) {
 				try {
 					BufferedImage bufferedImage = ImageIO.read(file) ;
+					fileLabel.setText(this.file.toString());
 					this.signUpImage = new Image(file.toURI().toString()) ;
 					this.signUpImage = SwingFXUtils.toFXImage(bufferedImage, null);
 				} catch (IOException e1) {

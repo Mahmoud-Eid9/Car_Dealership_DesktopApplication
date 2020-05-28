@@ -113,12 +113,12 @@ public class Car {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	public int reserve(Customer customer) {
+	public int reserve(Customer customer, String date, String date2) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
 	    	Statement stmt = con.createStatement();
 	    	stmt.executeQuery("UPDATE CAR SET ACCOUNT_ID ="+customer.getId()+" WHERE ID ="+this.id);
-	    	customer.setReservation(1);
+	    	customer.setReservation(1, date);
 	    	return 1 ;
 		}catch(Exception e) {
 			return 0 ;
