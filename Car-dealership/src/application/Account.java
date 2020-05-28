@@ -14,8 +14,9 @@ public class Account {
 		
 	}
 	
-	public Account(String firstName, String lastName, int age, String userName, String Password, boolean employee) {
+	public Account(int id,String firstName, String lastName, int age, String userName, String Password, boolean employee) {
 		super();
+		this.id = id ;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.age = age;

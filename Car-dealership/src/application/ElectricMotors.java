@@ -1,5 +1,10 @@
 package application;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 import javafx.scene.image.Image;
 
 public class ElectricMotors extends Car {
@@ -8,10 +13,10 @@ public class ElectricMotors extends Car {
 	private double milesPerCharge;
 	private double chargingTime;
 	
-	public ElectricMotors(String brand, String model, double price, int horsePower, int doors, int seats,
+	public ElectricMotors(int id ,String brand, String model, double price, int horsePower, int doors, int seats,
 			int topSpeed, String transmission, double trunkSize, String breaksType, double batteryCapacity, double milesPerCharge, double chargingTime,Image image) {
 		
-		super(brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType,image);
+		super(id,brand, model, price, horsePower, doors, seats, topSpeed, transmission, trunkSize, breaksType,image);
 		// TODO Auto-generated constructor stub
 		this.batteryCapacity = batteryCapacity;
 		this.milesPerCharge = milesPerCharge;
@@ -41,8 +46,16 @@ public class ElectricMotors extends Car {
 	public void setChargingTime(double chargingTime) {
 		this.chargingTime = chargingTime;
 	}
-	
-	//public chargerInstall()
-	
+	public int reserve(Customer customer) {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
+	    	Statement stmt = con.createStatement();
+	    	stmt.executeQuery("UPDATE CAR SET ACCOUNT_ID ="+customer.getId()+" WHERE ID ="+this.getid());
+	    	customer.setReservation(1);
+	    	return 1 ;
+		}catch(Exception e) {
+			return 0 ;
+		}
+	}	
 
 }

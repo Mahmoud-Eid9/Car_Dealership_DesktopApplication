@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 
 public class Car {
 	
+	private int id;
 	private String brand;
 	private String model;
 	private double price;
@@ -23,9 +24,10 @@ public class Car {
 	
 	
 	
-	public Car( String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
+	public Car( int id,String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
 			String transmission, double trunkSize, String breaksType, Image image) {
 		super();
+		this.id = id ;
 		this.brand = brand;
 		this.model = model;
 		this.price = price;
@@ -39,6 +41,12 @@ public class Car {
 		this.image = image;
 	}
 	
+	public int getid() {
+		return this.id;
+	}
+	public void setoid(int id) {
+		this.id = id;
+	}
 	public String getBrand() {
 		return brand;
 	}
@@ -105,15 +113,15 @@ public class Car {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	public void reserve() {
+	public int reserve(Customer customer) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
 	    	Statement stmt = con.createStatement();
-	    	ResultSet r = stmt.executeQuery("UPDATE table_name\n" + 
-	    			"SET column1 = value1, column2 = value2, ...\n" + 
-	    			"WHERE condition;");
+	    	stmt.executeQuery("UPDATE CAR SET ACCOUNT_ID ="+customer.getId()+" WHERE ID ="+this.id);
+	    	customer.setReservation(1);
+	    	return 1 ;
 		}catch(Exception e) {
-			
+			return 0 ;
 		}
 	}
 	
