@@ -2,6 +2,8 @@ package application;
 	
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -16,7 +18,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -42,8 +46,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
 
 import javax.imageio.ImageIO;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -155,7 +162,8 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		logIn.setMinSize(150, 60);
 		logIn.setFont(Font.font( 25) );
 		logIn.setOnAction(e -> {
-			this.customer = checkAccount(usernameField.getText(), passwordField.getText());
+			try {
+			this.customer = (Customer)checkAccount(usernameField.getText(), passwordField.getText());
 			if(this.v) {
 				warning.setVisible(true);
 				usernameField.setText(null);
@@ -169,6 +177,26 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 				trans.setOnFinished((ActionEvent event) -> {
 				primaryStage.setScene(homeScreen(primaryStage));
 			});
+			}
+			}catch(Exception f) {
+				Employee employee = (Employee)checkAccount(usernameField.getText(), passwordField.getText());
+			
+				if(this.v) {
+					warning.setVisible(true);
+					usernameField.setText(null);
+					passwordField.setText(null);
+				}else {
+					FadeTransition trans = new FadeTransition(Duration.millis(200));
+					trans.setNode(root);
+					trans.setFromValue(1);
+					trans.setToValue(0);
+					trans.play();
+					trans.setOnFinished((ActionEvent event) -> {
+					primaryStage.setScene(homeScreen(primaryStage, employee));
+				});
+				
+
+			}
 			}});
 		Button signUp = new Button("Sign-Up");
 		signUp.setMinSize(200, 60);
@@ -235,6 +263,50 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		//cars list
 		root.setCenter(displayCars(primaryStage));		
 		return scene;
+	}
+	
+	public Scene homeScreen(Stage primaryStage, Employee employee) {
+		BorderPane root = new BorderPane();
+		Scene scene = new Scene(root,1515,800,Color.WHITE);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());	
+		//SideBar
+		VBox sideBar = new VBox(50);
+		Circle profile = new Circle(80);
+		Image im = new Image("profile_icon.png");
+		profile.setFill(new ImagePattern(this.profile));
+		Image im2 = new Image("LogOut_icon.png");
+		ImageView image = new ImageView(im2);
+		Image im3 = new Image("Car_icon.png");
+		ImageView image2 = new ImageView(im3);
+		image2.setFitHeight(120);
+		image2.setFitWidth(120);
+		HBox carIcon = new HBox(image2);
+		HBox logOut = new HBox(image);
+		System.out.println("HI");
+		logOut.setOnMouseClicked(e -> {
+			primaryStage.setScene(logInScreen(primaryStage));
+		});
+		logOut.setAlignment(Pos.CENTER);
+		carIcon.setAlignment(Pos.CENTER);
+		sideBar.getChildren().addAll(profile, carIcon, logOut);
+		sideBar.setStyle("-fx-background-color: black");
+		sideBar.setPadding(new Insets(15, 15, 15, 15));
+		root.setLeft(sideBar);
+		root.setCenter(customersDataBase());
+		carIcon.setOnMouseClicked(e -> {
+			
+			if(image2.getImage().equals(im3)) {
+				root.setCenter(carsDataBase());
+				image2.setImage(new Image("profile_icon.png"));
+			}else {
+				root.setCenter(customersDataBase());
+				image2.setImage(im3);
+				System.out.println("hola");
+			}
+			
+		});
+		
+		return scene ;
 	}
 	
 	public ScrollPane displayCars(Stage primaryStage) {
@@ -606,7 +678,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		return scene ;
 	}
 	
-	public Customer checkAccount(String userName, String password) {
+	public Account checkAccount(String userName, String password) {
 		Customer customer = new Customer();
 		try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -628,9 +700,9 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
         	}else {
         		reservation = false;
         	}
-        	customer = new Customer(r.getInt(1),r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), employee, reservation );
+        	if(!employee) {
+        	customer = new Customer(r.getInt(1),r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), false, reservation );
         	InputStream is = r.getBinaryStream("image");
-        	
         	OutputStream os = new FileOutputStream(new File("profile.png"));
         	byte[] content = new byte[1024];
         	int size = 0;
@@ -642,6 +714,21 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
         	os.close();
         	is.close();
         	return customer ;
+        	}else {
+        	Employee emp= new Employee(r.getInt(1),r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), r.getString(9),r.getString(10), employee);
+        	InputStream is = r.getBinaryStream("image");
+        	OutputStream os = new FileOutputStream(new File("profile.png"));
+        	byte[] content = new byte[1024];
+        	int size = 0;
+        	while((size = is.read(content))!= -1) {
+        		os.write(content, 0, size);
+        	}
+        	this.profile = new Image("file:profile.png");
+        	this.profile.isPreserveRatio();
+        	os.close();
+        	is.close();
+        	return emp ;
+        	}
 		}
         con.close();
         this.v = true ;
@@ -686,6 +773,128 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
         	warning.show();
         }
 		
+	}
+	
+	public TableView carsDataBase(){
+		
+		TableView<ElectricMotors> table = new TableView<>();
+		TableColumn<ElectricMotors, String> brand = new TableColumn<>("Brand");
+		brand.setMinWidth(50);
+		brand.setCellValueFactory(new PropertyValueFactory("brand"));
+		TableColumn<ElectricMotors, String> model = new TableColumn<>("Model");
+		model.setMinWidth(50);
+		model.setCellValueFactory(new PropertyValueFactory("model"));
+		TableColumn<ElectricMotors, Integer> price = new TableColumn<>("Price");
+		price.setCellValueFactory(new PropertyValueFactory("price"));
+		TableColumn<ElectricMotors, Integer> horsepower = new TableColumn<>("Horsepower");
+		horsepower.setMinWidth(50);
+		horsepower.setCellValueFactory(new PropertyValueFactory("horsePower"));
+		TableColumn<ElectricMotors, Integer> doors = new TableColumn<>("Doors");
+		doors.setCellValueFactory(new PropertyValueFactory("doors"));
+		TableColumn<ElectricMotors, Integer> seats = new TableColumn<>("Seats");
+		seats.setCellValueFactory(new PropertyValueFactory("seats"));
+		TableColumn<ElectricMotors, Integer> topSpeed = new TableColumn<>("Top Speed");
+		topSpeed.setMinWidth(60);
+		topSpeed.setMaxWidth(100);
+		topSpeed.setCellValueFactory(new PropertyValueFactory("topSpeed"));
+		TableColumn<ElectricMotors, String> transmission = new TableColumn<>("Transmission");
+		transmission.setMinWidth(60);
+		transmission.setCellValueFactory(new PropertyValueFactory("transmission"));
+		TableColumn<ElectricMotors, Integer> trunkSize = new TableColumn<>("Trunk Size");
+		trunkSize.setMinWidth(50);
+		trunkSize.setCellValueFactory(new PropertyValueFactory("trunkSize"));
+		TableColumn<ElectricMotors, String> breakesType = new TableColumn<>("Brakes Type");
+		breakesType.setMinWidth(50);
+		breakesType.setCellValueFactory(new PropertyValueFactory("breaksType"));
+		TableColumn<ElectricMotors, Integer> accountId = new TableColumn<>("Customer ID");
+		accountId.setCellValueFactory(new PropertyValueFactory("accountId"));
+		TableColumn<ElectricMotors, Integer> batteryCap = new TableColumn<>("Battery Capacity");
+		batteryCap.setMinWidth(50);
+		batteryCap.setCellValueFactory(new PropertyValueFactory("batteryCapacity"));
+		TableColumn<ElectricMotors, Integer> milesPerCharge = new TableColumn<>("MilesPerCharge");
+		milesPerCharge.setMinWidth(50);
+		milesPerCharge.setCellValueFactory(new PropertyValueFactory("milesPerCharge"));
+		TableColumn<ElectricMotors, Integer> chargeTime = new TableColumn<>("Charging Time");
+		chargeTime.setMinWidth(50);
+		chargeTime.setCellValueFactory(new PropertyValueFactory("chargingTime"));
+		
+		
+		ObservableList<ElectricMotors> cars = FXCollections.observableArrayList() ;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
+        	Statement stmt = con.createStatement();
+        	ResultSet r = stmt.executeQuery("Select * From CAR");
+			while(r.next()) {
+				ElectricMotors car = new ElectricMotors(r.getInt(1),r.getString(2), r.getString(3), r.getDouble(4), r.getInt(5), r.getInt(6), r.getInt(7),r.getInt(8), r.getString(9), r.getInt(10), r.getString(11),r.getInt(14), r.getInt(15),r.getInt(16),null );
+				car.setAccountId(r.getInt(13));
+				cars.add(car);
+			}
+			
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		table.getColumns().addAll(brand,model,price, horsepower,doors,seats,topSpeed,transmission,trunkSize,breakesType,accountId,batteryCap,milesPerCharge,chargeTime );
+		table.setItems(cars);
+		
+		
+		return table ;
+	}
+	
+	public TableView customersDataBase(){
+		
+		TableView<Customer> table = new TableView<>();
+		
+		TableColumn<Customer, Integer> id = new TableColumn<>("ID");
+		id.setCellValueFactory(new PropertyValueFactory("id"));
+		TableColumn<Customer, String> firstName = new TableColumn<>("First Name");
+		firstName.setMinWidth(100);
+		firstName.setCellValueFactory(new PropertyValueFactory("firstName"));
+		TableColumn<Customer, String> lastName = new TableColumn<>("Last Name");
+		lastName.setMinWidth(100);
+		lastName.setCellValueFactory(new PropertyValueFactory("lastName"));
+		TableColumn<Customer, Integer> age = new TableColumn<>("Age");
+		age.setCellValueFactory(new PropertyValueFactory("age"));
+		TableColumn<Customer, String> username = new TableColumn<>("Username");
+		username.setMinWidth(130);
+		username.setCellValueFactory(new PropertyValueFactory("userName"));
+		TableColumn<Customer, String> password = new TableColumn<>("Password");
+		password.setMinWidth(140);
+		password.setCellValueFactory(new PropertyValueFactory("Password"));
+		TableColumn<Customer, String> receiptDate = new TableColumn<>("Receipt Date");
+		receiptDate.setMinWidth(150);
+		receiptDate.setCellValueFactory(new PropertyValueFactory("receiptDate"));
+		TableColumn<Customer, String> charger = new TableColumn<>("Charger Installation");
+		charger.setMinWidth(150);
+		charger.setCellValueFactory(new PropertyValueFactory("chargerDate"));
+
+		ObservableList<Customer> customers = FXCollections.observableArrayList() ;
+		try {
+	        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
+	        Statement stmt = con.createStatement();
+	        ResultSet r = stmt.executeQuery("Select * From ACCOUNT WHERE EMPLOYEE = 0");
+	        boolean reserve;
+			while(r.next()) {
+	        	if(r.getInt(11) == 1) {
+	        		reserve = true;
+	        	}else {
+	        		reserve = false;
+	        	}
+				Customer customer = new Customer(r.getInt(1),r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), false, reserve);
+				customer.setReceiptDate(r.getString(12));
+				customer.setChargerDate(r.getString(13));
+				customers.add(customer);
+			}
+			
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		
+		
+		table.getColumns().addAll(id,firstName,lastName,age,username,password,receiptDate,charger) ;
+		table.setItems(customers);
+		
+		return table ;
 	}
 	
 	public static void main(String[] args) {

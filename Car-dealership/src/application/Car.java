@@ -21,10 +21,10 @@ public class Car {
 	private double trunkSize;
 	private String breaksType;
 	private Image image;
+	private int accountId ;
 	
 	
-	
-	public Car( int id,String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
+	public Car(int id,String brand, String model, double price, int horsePower, int doors, int seats, int topSpeed,
 			String transmission, double trunkSize, String breaksType, Image image) {
 		super();
 		this.id = id ;
@@ -41,6 +41,12 @@ public class Car {
 		this.image = image;
 	}
 	
+	public void setAccountId(int accountId) {
+		this.accountId = accountId ;
+	}
+	public int getAccountId() {
+		return this.accountId ;
+	}
 	public int getid() {
 		return this.id;
 	}

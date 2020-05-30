@@ -7,6 +7,9 @@ import java.sql.Statement;
 public class Customer extends Account {
 	
 	private boolean reservation;
+	private String receiptDate;
+	private String chargerDate;
+
 
 	public Customer(int id ,String firstName, String lastName, int age, String userName, String password, boolean employee, boolean reservation) {
 		super(id,firstName, lastName, age, userName, password, employee);
@@ -15,6 +18,18 @@ public class Customer extends Account {
 	}
 	public Customer() {
 		
+	}
+	public String getReceiptDate() {
+		return receiptDate;
+	}
+	public void setReceiptDate(String receiptDate) {
+		this.receiptDate = receiptDate;
+	}
+	public String getChargerDate() {
+		return chargerDate;
+	}
+	public void setChargerDate(String chargerDate) {
+		this.chargerDate = chargerDate;
 	}
 
 	public boolean getReservation() {
