@@ -60,11 +60,12 @@ import javafx.scene.text.FontWeight;
 
 public class Main extends Application {
 	
-	Image signUpImage ;
-	File file ;
-	Customer customer;
-	Image profile ;
-	ArrayList<Car> cars = new ArrayList<Car>() ;
+private	Image signUpImage ;
+private	File file ;
+private	Customer customer;
+private	Image profile ;
+private ArrayList<Car> cars = new ArrayList<Car>() ;
+
 	boolean v = true ;
 	
 	@Override
@@ -289,7 +290,7 @@ public class Main extends Application {
 			
 			ElectricMotors elecCar = (ElectricMotors)car ;
 			VBox root = new VBox();
-			Scene scene = new Scene(root, 1200,900);
+			Scene scene = new Scene(root, 1500,900);
 			scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());	
 			root.setStyle("-fx-background-color: white");
 			Label brand = new Label("Brand:  "+car.getBrand());
@@ -324,16 +325,22 @@ public class Main extends Application {
 			        	System.out.println(a.getMessage());
 			        }
 				if(key == 0) {
-				System.out.println(this.customer.getId());
-				reserve = new Button("R E S E R V E");
-				reserve.setAlignment(Pos.CENTER);
-				reserve.setMinSize(200, 60);
-				reserve.setOnAction(f ->{
-				        elecCar.reserve(this.customer, datepick.getValue().toString(), datepick2.getValue().toString());
-						reserve.setText("R E S E R V E D");
-						reserve.setId("grey-button");
-						reserve.setAlignment(Pos.CENTER);
-						reserve.setMinSize(200, 60);
+					
+					reserve = new Button("R E S E R V E");
+					reserve.setAlignment(Pos.CENTER);
+					reserve.setMinSize(200, 60);
+					reserve.setOnAction(f ->{
+						try {
+					        elecCar.reserve(this.customer, datepick.getValue().toString(), datepick2.getValue().toString());
+							reserve.setText("R E S E R V E D");
+							reserve.setId("grey-button");
+							reserve.setAlignment(Pos.CENTER);
+							reserve.setMinSize(200, 60);
+						}catch(Exception e) {
+				        	Alert warning = new Alert(Alert.AlertType.ERROR);
+				        	warning.setHeaderText("Please Choose a Date");
+				        	warning.show();
+						}
 				});
 				}else {
 						reserve = new Button("R E S E R V E D");
@@ -361,7 +368,7 @@ public class Main extends Application {
 			v4.setSpacing(25);
 			v4.setAlignment(Pos.BOTTOM_CENTER);
 			HBox h = new HBox (v1,v2,v3,v4);
-			h.setSpacing(70);
+			h.setSpacing(95);
 			h.setAlignment(Pos.BASELINE_LEFT);
 			h.setPadding(new Insets(50,0,50,0));
 			ImageView im = new ImageView(elecCar.getImage());
@@ -381,7 +388,7 @@ public class Main extends Application {
 		}catch(Exception e) {
 			
 			VBox root = new VBox();
-			Scene scene = new Scene(root, 1200,900);
+			Scene scene = new Scene(root, 1400,900);
 			scene.getStylesheets().add(getClass().getResource("styling.css").toExternalForm());	
 			root.setStyle("-fx-background-color: white");
 			Label brand = new Label("Brand:  "+car.getBrand());
@@ -415,11 +422,17 @@ public class Main extends Application {
 				reserve.setAlignment(Pos.CENTER);
 				reserve.setMinSize(200, 60);
 				reserve.setOnAction(f ->{
+					try {
 				        car.reserve(this.customer, datepick.getValue().toString(), "hi");
 						reserve.setText("R E S E R V E D");
 						reserve.setId("grey-button");
 						reserve.setAlignment(Pos.CENTER);
 						reserve.setMinSize(200, 60);
+					}catch(Exception a) {
+			        	Alert warning = new Alert(Alert.AlertType.ERROR);
+			        	warning.setHeaderText("Please Choose a Date");
+			        	warning.show();
+					}
 				});
 				}else {
 						reserve = new Button("R E S E R V E D");
@@ -615,7 +628,6 @@ public class Main extends Application {
         	}else {
         		reservation = false;
         	}
-        	System.out.println(r.getInt(1));
         	customer = new Customer(r.getInt(1),r.getString(2), r.getString(3), r.getInt(4),r.getString(5), r.getString(6), employee, reservation );
         	InputStream is = r.getBinaryStream("image");
         	
