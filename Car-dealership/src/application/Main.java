@@ -282,7 +282,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		image2.setFitWidth(120);
 		HBox carIcon = new HBox(image2);
 		HBox logOut = new HBox(image);
-		System.out.println("HI");
 		logOut.setOnMouseClicked(e -> {
 			primaryStage.setScene(logInScreen(primaryStage));
 		});
@@ -301,7 +300,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			}else {
 				root.setCenter(customersDataBase());
 				image2.setImage(im3);
-				System.out.println("hola");
 			}
 			
 		});
@@ -381,7 +379,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			
 			Label dateLabel = new Label("Pick a Date ");
 			DatePicker datepick = new DatePicker() ;
-			Label dateLabel2 = new Label("charger installation ");
+			Label dateLabel2 = new Label("Charger Installation ");
 			DatePicker datepick2 = new DatePicker() ;
 			
 			Button reserve ;
@@ -435,14 +433,15 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			VBox v3 = new VBox(doors, seats,chargingTime);
 			v3.setSpacing(15);
 			HBox h1 = new HBox(dateLabel,datepick);
+			h1.setSpacing(83);
 			HBox h2 = new HBox(dateLabel2,datepick2);
-			VBox v4 = new VBox(reserve, h1, h2 );
-			v4.setSpacing(25);
-			v4.setAlignment(Pos.BOTTOM_CENTER);
+			h2.setSpacing(10);
+			VBox v4 = new VBox(h1, h2 ,reserve);
+			v4.setSpacing(30);
+			v4.setAlignment(Pos.CENTER);
 			HBox h = new HBox (v1,v2,v3,v4);
-			h.setSpacing(95);
-			h.setAlignment(Pos.BASELINE_LEFT);
-			h.setPadding(new Insets(50,0,50,0));
+			h.setSpacing(70);
+			h.setAlignment(Pos.CENTER);
 			ImageView im = new ImageView(elecCar.getImage());
 			im.setFitHeight(590.625);
 			im.setFitWidth(1050);
@@ -450,6 +449,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			image.setPadding(new Insets(50,0,0,0));
 			image.setAlignment(Pos.CENTER);
 			root.getChildren().addAll(image, h);
+			root.setSpacing(50);
 			root.setPadding(new Insets(30, 100,30,100));
 			root.setAlignment(Pos.CENTER);
 			Stage stage =  new Stage();
@@ -522,19 +522,19 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			
 			
 			HBox h1 = new HBox(datepickLabel,datepick);
+			h1.setSpacing(40);
 			VBox v1 = new VBox(brand, model, price, horsePower);
 			v1.setSpacing(15);
 			VBox v2 = new VBox(topSpeed, transmission, trunkSize, breaksType);
 			v2.setSpacing(15);
 			VBox v3 = new VBox(doors, seats);
 			v3.setSpacing(15);
-			VBox v4 = new VBox(reserve, h1);
-			v4.setSpacing(25);
-			v4.setAlignment(Pos.BOTTOM_CENTER);
+			VBox v4 = new VBox(h1, reserve);
+			v4.setSpacing(30);
+			v4.setAlignment(Pos.CENTER);
 			HBox h = new HBox (v1,v2,v3,v4);
-			h.setSpacing(100);
-			h.setAlignment(Pos.BASELINE_CENTER);
-			h.setPadding(new Insets(50,0,50,0));
+			h.setSpacing(70);
+			h.setAlignment(Pos.CENTER);
 			ImageView im = new ImageView(car.getImage());
 			im.setFitHeight(590.625);
 			im.setFitWidth(1000);
@@ -542,6 +542,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 			image.setPadding(new Insets(50,0,0,0));
 			image.setAlignment(Pos.CENTER);
 			root.getChildren().addAll(image, h);
+			root.setSpacing(50);
 			root.setPadding(new Insets(30, 100, 30, 100));
 			root.setAlignment(Pos.CENTER);
 			Stage stage =  new Stage();
@@ -601,7 +602,13 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		
 		Button button = new Button("Sign-Up");
 		button.setOnAction(e -> {
+			try {
 			Register(firstName.getText(), lastName.getText(), userName.getText(), Integer.parseInt(age.getText()), password.getText(), confirmPassword.getText(), this.signUpImage ,primaryStage);
+			}catch(Exception f) {
+	        	Alert warning = new Alert(Alert.AlertType.ERROR);
+	        	warning.setHeaderText("Please fill all the requirements");
+	        	warning.show();
+			}
 		});
 		Button back = new Button("Back");
 		back.setOnAction(e -> {
@@ -817,7 +824,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		TableColumn<ElectricMotors, Integer> chargeTime = new TableColumn<>("Charging Time");
 		chargeTime.setMinWidth(50);
 		chargeTime.setCellValueFactory(new PropertyValueFactory("chargingTime"));
-		
 		
 		ObservableList<ElectricMotors> cars = FXCollections.observableArrayList() ;
 		try {
