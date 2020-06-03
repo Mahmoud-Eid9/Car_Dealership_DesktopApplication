@@ -26,12 +26,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,27 +40,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+
+
+
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Observable;
-
 import javax.imageio.ImageIO;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
-
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 
 
@@ -246,7 +236,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		//SideBar
 		VBox sideBar = new VBox(50);
 		Circle profile = new Circle(80);
-		Image im = new Image("profile_icon.png");
 		profile.setFill(new ImagePattern(this.profile));
 		Image im2 = new Image("LogOut_icon.png");
 		ImageView image = new ImageView(im2);
@@ -272,7 +261,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		//SideBar
 		VBox sideBar = new VBox(50);
 		Circle profile = new Circle(80);
-		Image im = new Image("profile_icon.png");
 		profile.setFill(new ImagePattern(this.profile));
 		Image im2 = new Image("LogOut_icon.png");
 		ImageView image = new ImageView(im2);
@@ -317,7 +305,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 	        double deltaY = scrollEvent.getDeltaY() * SPEED;
 	        root.setVvalue(root.getVvalue() - deltaY);
 	    });
-		ImageView image[] = new ImageView[this.cars.size()];
 		Label carName[] = new Label[this.cars.size()];
 		Label carPrice[] = new Label[this.cars.size()];
 		HBox h1[] = new HBox[this.cars.size()];
@@ -670,7 +657,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 					this.signUpImage = new Image(file.toURI().toString()) ;
 					this.signUpImage = SwingFXUtils.toFXImage(bufferedImage, null);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
 				}
 				
@@ -753,7 +740,6 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "CAR_DEALERSHIP","348368");
-            Statement stmt = con.createStatement();
             FileInputStream fis = new FileInputStream(this.file);
             PreparedStatement pst = null;
             String sql = "Insert into Account (firstname, lastname, age, username, password, image ,employee, reservation) Values (?,?,?,?,?,?,0,0)" ;
@@ -770,6 +756,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
             stage.setScene(logInScreen(stage));
             con.close();
             pst.close();
+            fis.close();
 
         }catch(Exception e) {
             System.out.println(e);
@@ -782,6 +769,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public TableView carsDataBase(){
 		
 		TableView<ElectricMotors> table = new TableView<>();
@@ -846,7 +834,7 @@ private ArrayList<Car> cars = new ArrayList<Car>() ;
 		
 		return table ;
 	}
-	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public TableView customersDataBase(){
 		
 		TableView<Customer> table = new TableView<>();
